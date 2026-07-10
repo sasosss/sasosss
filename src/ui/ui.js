@@ -392,8 +392,8 @@
         <div class="kv"><span>Religione principale</span><b>${rel ? `<span class="link" data-action="inspect-religion" data-id="${rel.id}">${U.esc(rel.name)}</span>` : '—'}</b></div>
         <div class="kv"><span>Risorse vicine</span><b>${res.map(U.esc).join(', ') || 'poche'}</b></div>
         <div class="kv"><span>Edifici</span><b>${[...c.buildings, ...(c.walls ? ['mura×' + c.walls] : [])].map(U.esc).join(', ') || 'capanni'}</b></div>
-        <h3>Mercato</h3>
-        ${Object.entries(c.prices).map(([k, v]) => `<div class="kv"><span>${k}</span><b>${v} <span class="dim">monete</span> ${v > 2.5 ? '📈' : v < 0.7 ? '📉' : ''}</b></div>`).join('')}
+        ${civ.techs.includes('moneta') ? `<h3>Mercato</h3>
+        ${Object.entries(c.prices).map(([k, v]) => `<div class="kv"><span>${k}</span><b>${v} <span class="dim">monete</span> ${v > 2.5 ? '📈' : v < 0.7 ? '📉' : ''}</b></div>`).join('')}` : '<h3>Mercato</h3><div class="dim">Questo popolo non conosce ancora la moneta: si baratta.</div>'}
         <h3>Rotte commerciali</h3>
         ${c.tradeRoutes.map(id => { const o = w.cities[id]; return o ? `<div class="row link" data-action="inspect-city" data-id="${o.id}">⛵ ${U.esc(o.name)}</div>` : ''; }).join('') || '<div class="dim">Nessuna</div>'}
         <h3>Abitanti noti (${folks.length} simulati)</h3>
