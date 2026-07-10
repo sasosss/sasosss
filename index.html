@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persistent Civilization Simulator</title>
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<div id="overlay">
+  <div class="spinner"></div>
+  <h1>Creazione del mondo…</h1>
+  <p>Continenti, popoli, lingue e divinità stanno prendendo forma</p>
+  <div class="progress"><div class="progress-fill"></div></div>
+  <div class="progress-label"></div>
+</div>
+
+<div id="topbar">
+  <span id="world-title">🌍</span>
+  <span id="date-label">anno 1 · Primavera</span>
+  <div id="quick-stats"></div>
+  <div id="speed-controls">
+    <button data-action="speed" data-id="0" title="Pausa (spazio)">⏸</button>
+    <button data-action="speed" data-id="1">1×</button>
+    <button data-action="speed" data-id="2">2×</button>
+    <button data-action="speed" data-id="5">5×</button>
+    <button data-action="speed" data-id="10">10×</button>
+    <button data-action="speed" data-id="50">50×</button>
+    <button data-action="speed" data-id="100">100×</button>
+    <button data-action="speed" data-id="1000">1000×</button>
+  </div>
+  <button class="icon-btn" data-action="save-now" title="Salva ora">💾</button>
+  <button class="icon-btn" data-action="export-save" title="Esporta salvataggio">⬇️</button>
+  <button class="icon-btn" data-action="new-world" title="Nuovo mondo">🌱</button>
+  <span id="save-indicator">💾 auto-salvataggio attivo</span>
+</div>
+
+<div id="main">
+  <div id="map-wrap">
+    <canvas id="map"></canvas>
+    <div id="inspector"></div>
+    <div id="map-tools">
+      <button data-action="toggle-borders" title="Mostra/nascondi confini">🗺️ confini</button>
+    </div>
+    <div id="minimap-wrap"><canvas id="minimap" width="220" height="140"></canvas></div>
+    <div id="toasts"></div>
+    <div id="chat-modal">
+      <div id="chat-window">
+        <div id="chat-header">
+          <div id="chat-title">💬</div>
+          <div id="chat-subtitle"></div>
+          <button class="close-btn" data-action="close-chat">✕</button>
+        </div>
+        <div id="chat-log"></div>
+        <div id="chat-input-row">
+          <textarea id="chat-input" rows="1" placeholder="Scrivi qualcosa… (es: chi sei? parlami della tua famiglia, cosa pensi del re?)"></textarea>
+          <button id="chat-send">Invia</button>
+        </div>
+        <div id="chat-hint">Il tempo è in pausa durante la conversazione. Gli NPC ricordano tutto ciò che dici, anche a distanza di anni.</div>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar">
+    <div id="search-row"><input id="search-input" type="text" placeholder="🔎 Cerca persone, città, civiltà, religioni, guerre…"></div>
+    <div id="tabs">
+      <button data-action="tab" data-id="world" class="active">🌍 Mondo</button>
+      <button data-action="tab" data-id="civs">🏛️ Civiltà</button>
+      <button data-action="tab" data-id="timeline">📜 Cronologia</button>
+      <button data-action="tab" data-id="search">🔎 Ricerca</button>
+    </div>
+    <div id="panel-content"></div>
+  </div>
+</div>
+
+<script src="src/core/utils.js"></script>
+<script src="src/core/rng.js"></script>
+<script src="src/core/noise.js"></script>
+<script src="src/core/language.js"></script>
+<script src="src/sim/worldgen.js"></script>
+<script src="src/sim/culture.js"></script>
+<script src="src/sim/person.js"></script>
+<script src="src/sim/tech.js"></script>
+<script src="src/sim/civilization.js"></script>
+<script src="src/sim/history.js"></script>
+<script src="src/sim/engine.js"></script>
+<script src="src/sim/demography.js"></script>
+<script src="src/sim/politics.js"></script>
+<script src="src/sim/economy.js"></script>
+<script src="src/sim/war.js"></script>
+<script src="src/sim/nature.js"></script>
+<script src="src/chat/chat.js"></script>
+<script src="src/render/renderer.js"></script>
+<script src="src/ui/ui.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
