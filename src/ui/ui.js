@@ -77,6 +77,10 @@
     }
 
     toast(ev) {
+      // at high speed only epochal events pop up, and never more than 4 at once
+      if (this.app.speed >= 50 && ev.imp < 8) return;
+      const box = $('#toasts');
+      while (box.children.length >= 4) box.firstChild.remove();
       const t = document.createElement('div');
       t.className = 'toast';
       t.innerHTML = `<span>${CAT_ICONS[ev.cat] || '📜'}</span> <b>${U.yearLabel(ev.y)}</b> — ${U.esc(ev.text)}`;
@@ -94,6 +98,7 @@
     // ---------------- top bar ----------------
     renderTopbar() {
       const w = this.world;
+      if (!w) return;
       $('#world-title').textContent = w.worldName ? `🌍 ${w.worldName}` : '🌍';
       $('#date-label').textContent = `${U.yearLabel(w.year)} · ${PCS.SEASONS[w.season]}`;
       const pop = U.sum(w.cities.filter(c => !c.dead), c => c.pop);
@@ -109,6 +114,7 @@
 
     // ---------------- side panel ----------------
     renderPanel() {
+      if (!this.world) return;
       const el = $('#panel-content');
       document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.id === this.tab));
       switch (this.tab) {

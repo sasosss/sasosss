@@ -15,9 +15,10 @@ const js = scriptOrder.map(p => {
   return `/* ===== ${p} ===== */\n${code}`;
 }).join('\n');
 
+// NB: replacement callbacks avoid `$`-pattern interpretation in JS/CSS content
 let out = html
-  .replace(/<link rel="stylesheet"[^>]+>/, `<style>\n${css}\n</style>`)
-  .replace(/(<script src="[^"]+"><\/script>\s*)+/, `<script>\n${js.replace(/<\/script>/g, '<\\/script>')}\n</script>\n`);
+  .replace(/<link rel="stylesheet"[^>]+>/, () => `<style>\n${css}\n</style>`)
+  .replace(/(<script src="[^"]+"><\/script>\s*)+/, () => `<script>\n${js.replace(/<\/script>/g, '<\\/script>')}\n</script>\n`);
 
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 const outPath = path.join(root, 'dist/PersistentCivilizationSimulator.html');

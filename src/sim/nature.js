@@ -43,7 +43,7 @@
         if (a.count <= 2) {
           a.extinct = true;
           a.count = 0;
-          world.chronicle.add(year, 'natura', `I ${a.species} della regione si sono estinti.`, 4);
+          world.chronicle.add(year, 'natura', `${U.cap(U.artPl(a.species))} ${a.species} della regione si sono estinti.`, 4);
         }
       }
     }

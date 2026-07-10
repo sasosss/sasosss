@@ -1051,11 +1051,11 @@
         const nearAnimals = world.animals.filter(a => !a.extinct && U.dist(a.x, a.y, city.x, city.y) < 30);
         if (nearAnimals.length) {
           const a = rng.pick(nearAnimals);
-          if (a.type === 'predatore') out += ` Occhio ai ${a.species}, se viaggi: ${a.count > 100 ? 'quest\'anno sono tanti e affamati' : 'ce ne sono ancora, anche se pochi'}. ${p.traits.courage > 0.6 ? 'Io non li temo, ma tu vai armato.' : 'Io dopo il tramonto non esco.'}`;
-          else out += ` I cacciatori dicono che i ${a.species} ${a.count > 800 ? 'abbondano: carne per tutti quest\'anno' : 'scarseggiano: brutte notizie per l\'inverno'}.`;
+          if (a.type === 'predatore') out += ` Occhio a${U.artPl(a.species) === 'gli' ? 'gli' : 'i'} ${a.species}, se viaggi: ${a.count > 100 ? 'quest\'anno sono tanti e affamati' : 'ce ne sono ancora, anche se pochi'}. ${p.traits.courage > 0.6 ? 'Io non li temo, ma tu vai armato.' : 'Io dopo il tramonto non esco.'}`;
+          else out += ` I cacciatori dicono che ${U.artPl(a.species)} ${a.species} ${a.count > 800 ? 'abbondano: carne per tutti quest\'anno' : 'scarseggiano: brutte notizie per l\'inverno'}.`;
         }
         const extinct = world.animals.find(a => a.extinct && U.dist(a.x, a.y, city.x, city.y) < 40);
-        if (extinct && rng.chance(0.4)) out += ` Pensa che i ${extinct.species} da queste parti non ci sono più: mio nonno li cacciava, io non ne ho mai visto uno.`;
+        if (extinct && rng.chance(0.4)) out += ` Pensa che ${U.artPl(extinct.species)} ${extinct.species} da queste parti non ci sono più: mio nonno li cacciava, io non ne ho mai visto uno.`;
       }
       return out;
     }

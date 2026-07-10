@@ -31,6 +31,7 @@
       if (saved) {
         this.world = saved.world;
         this.renderer.attach(this.world);
+        this.hideOverlay(); // catchUp re-shows it only if there is work to do
         this.catchUp(saved.elapsedMs);
       } else {
         this.newWorld(true);
@@ -44,8 +45,8 @@
       window.addEventListener('beforeunload', () => this.save());
       setInterval(() => { this.renderer.politicalDirty = true; }, 2500);
       setInterval(() => {
-        if (this.ui.tab === 'world' || this.ui.tab === 'civs') this.ui.renderPanel();
-      }, 8000);
+        if (this.speed > 0 && (this.ui.tab === 'world' || this.ui.tab === 'civs')) this.ui.renderPanel();
+      }, 3000);
     }
 
     newWorld(first) {

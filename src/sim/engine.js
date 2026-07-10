@@ -87,6 +87,7 @@
       this.seedAnimals();
       this.chronicle.add(this.year, 'cultura', `Inizia la storia scritta del mondo di ${this.worldName}.`, 9);
       this.recount();
+      if (PCS.religionTick) PCS.religionTick(this);
       this.sampleStats();
     }
 

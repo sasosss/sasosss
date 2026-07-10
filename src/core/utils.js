@@ -37,6 +37,13 @@
       return best;
     },
     removeItem(arr, x) { const i = arr.indexOf(x); if (i >= 0) arr.splice(i, 1); },
+    // Italian plural article for animal/thing names ("i lupi", "gli orsi", "le tigri")
+    artPl(word) {
+      const w = String(word || '');
+      if (/^(tigri|antilopi|capre|pecore|aquile|volpi)/.test(w)) return 'le';
+      if (/^[aeiou]/i.test(w) || /^(gn|ps|z|x|s[bcdfglmnpqrtvz])/i.test(w)) return 'gli';
+      return 'i';
+    },
     // Normalize text for NLU: lowercase, strip accents & punctuation
     norm(s) {
       return String(s || '').toLowerCase()

@@ -382,6 +382,13 @@ span.link:hover { text-decoration: underline; background: none; }
       return best;
     },
     removeItem(arr, x) { const i = arr.indexOf(x); if (i >= 0) arr.splice(i, 1); },
+    // Italian plural article for animal/thing names ("i lupi", "gli orsi", "le tigri")
+    artPl(word) {
+      const w = String(word || '');
+      if (/^(tigri|antilopi|capre|pecore|aquile|volpi)/.test(w)) return 'le';
+      if (/^[aeiou]/i.test(w) || /^(gn|ps|z|x|s[bcdfglmnpqrtvz])/i.test(w)) return 'gli';
+      return 'i';
+    },
     // Normalize text for NLU: lowercase, strip accents & punctuation
     norm(s) {
       return String(s || '').toLowerCase()
@@ -694,9 +701,7 @@ span.link:hover { text-decoration: underline; background: none; }
   function cleanup(w) {
     return w
       .replace(/'{2,}/g, "'")
-      .replace(/(.)\1{2,}/g, '<script src="src/main.js"></script>
-<script src="src/main.js"></script>
-')
+      .replace(/(.)\1{2,}/g, '$1$1')
       .replace(/'$/, '');
   }
 
@@ -1589,6 +1594,7 @@ span.link:hover { text-decoration: underline; background: none; }
       this.seedAnimals();
       this.chronicle.add(this.year, 'cultura', `Inizia la storia scritta del mondo di ${this.worldName}.`, 9);
       this.recount();
+      if (PCS.religionTick) PCS.religionTick(this);
       this.sampleStats();
     }
 
@@ -3458,7 +3464,7 @@ span.link:hover { text-decoration: underline; background: none; }
         if (a.count <= 2) {
           a.extinct = true;
           a.count = 0;
-          world.chronicle.add(year, 'natura', `I ${a.species} della regione si sono estinti.`, 4);
+          world.chronicle.add(year, 'natura', `${U.cap(U.artPl(a.species))} ${a.species} della regione si sono estinti.`, 4);
         }
       }
     }
@@ -4680,11 +4686,11 @@ span.link:hover { text-decoration: underline; background: none; }
         const nearAnimals = world.animals.filter(a => !a.extinct && U.dist(a.x, a.y, city.x, city.y) < 30);
         if (nearAnimals.length) {
           const a = rng.pick(nearAnimals);
-          if (a.type === 'predatore') out += ` Occhio ai ${a.species}, se viaggi: ${a.count > 100 ? 'quest\'anno sono tanti e affamati' : 'ce ne sono ancora, anche se pochi'}. ${p.traits.courage > 0.6 ? 'Io non li temo, ma tu vai armato.' : 'Io dopo il tramonto non esco.'}`;
-          else out += ` I cacciatori dicono che i ${a.species} ${a.count > 800 ? 'abbondano: carne per tutti quest\'anno' : 'scarseggiano: brutte notizie per l\'inverno'}.`;
+          if (a.type === 'predatore') out += ` Occhio a${U.artPl(a.species) === 'gli' ? 'gli' : 'i'} ${a.species}, se viaggi: ${a.count > 100 ? 'quest\'anno sono tanti e affamati' : 'ce ne sono ancora, anche se pochi'}. ${p.traits.courage > 0.6 ? 'Io non li temo, ma tu vai armato.' : 'Io dopo il tramonto non esco.'}`;
+          else out += ` I cacciatori dicono che ${U.artPl(a.species)} ${a.species} ${a.count > 800 ? 'abbondano: carne per tutti quest\'anno' : 'scarseggiano: brutte notizie per l\'inverno'}.`;
         }
         const extinct = world.animals.find(a => a.extinct && U.dist(a.x, a.y, city.x, city.y) < 40);
-        if (extinct && rng.chance(0.4)) out += ` Pensa che i ${extinct.species} da queste parti non ci sono più: mio nonno li cacciava, io non ne ho mai visto uno.`;
+        if (extinct && rng.chance(0.4)) out += ` Pensa che ${U.artPl(extinct.species)} ${extinct.species} da queste parti non ci sono più: mio nonno li cacciava, io non ne ho mai visto uno.`;
       }
       return out;
     }
@@ -5244,6 +5250,10 @@ span.link:hover { text-decoration: underline; background: none; }
     }
 
     toast(ev) {
+      // at high speed only epochal events pop up, and never more than 4 at once
+      if (this.app.speed >= 50 && ev.imp < 8) return;
+      const box = $('#toasts');
+      while (box.children.length >= 4) box.firstChild.remove();
       const t = document.createElement('div');
       t.className = 'toast';
       t.innerHTML = `<span>${CAT_ICONS[ev.cat] || '📜'}</span> <b>${U.yearLabel(ev.y)}</b> — ${U.esc(ev.text)}`;
@@ -5261,6 +5271,7 @@ span.link:hover { text-decoration: underline; background: none; }
     // ---------------- top bar ----------------
     renderTopbar() {
       const w = this.world;
+      if (!w) return;
       $('#world-title').textContent = w.worldName ? `🌍 ${w.worldName}` : '🌍';
       $('#date-label').textContent = `${U.yearLabel(w.year)} · ${PCS.SEASONS[w.season]}`;
       const pop = U.sum(w.cities.filter(c => !c.dead), c => c.pop);
@@ -5276,6 +5287,7 @@ span.link:hover { text-decoration: underline; background: none; }
 
     // ---------------- side panel ----------------
     renderPanel() {
+      if (!this.world) return;
       const el = $('#panel-content');
       document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.id === this.tab));
       switch (this.tab) {
@@ -5765,8 +5777,7 @@ span.link:hover { text-decoration: underline; background: none; }
       const b = document.createElement('div');
       b.className = 'bubble ' + who;
       // *azioni* in corsivo
-      const html = U.esc(text).replace(/\*([^*]+)\*/g, '<em><script src="src/main.js"></script>
-</em>').replace(/\n/g, '<br>');
+      const html = U.esc(text).replace(/\*([^*]+)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
       b.innerHTML = html;
       log.appendChild(b);
       log.scrollTop = log.scrollHeight;
@@ -5819,6 +5830,7 @@ span.link:hover { text-decoration: underline; background: none; }
       if (saved) {
         this.world = saved.world;
         this.renderer.attach(this.world);
+        this.hideOverlay(); // catchUp re-shows it only if there is work to do
         this.catchUp(saved.elapsedMs);
       } else {
         this.newWorld(true);
@@ -5832,8 +5844,8 @@ span.link:hover { text-decoration: underline; background: none; }
       window.addEventListener('beforeunload', () => this.save());
       setInterval(() => { this.renderer.politicalDirty = true; }, 2500);
       setInterval(() => {
-        if (this.ui.tab === 'world' || this.ui.tab === 'civs') this.ui.renderPanel();
-      }, 8000);
+        if (this.speed > 0 && (this.ui.tab === 'world' || this.ui.tab === 'civs')) this.ui.renderPanel();
+      }, 3000);
     }
 
     newWorld(first) {

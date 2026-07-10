@@ -1,0 +1,26 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "Una simulazione emergente di un mondo vivente, interamente in un singolo file HTML (nessun server, nessuna dipendenza). Il giocatore è un osservatore — un \"Viandante Eterno\" — in un mondo che nasce, evolve e continua a vivere anche quando la pagina è chiusa.",
+  "main": "build.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sasosss/sasosss.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sasosss/sasosss/issues"
+  },
+  "homepage": "https://github.com/sasosss/sasosss#readme",
+  "dependencies": {
+    "puppeteer-core": "^25.3.0"
+  }
+}
