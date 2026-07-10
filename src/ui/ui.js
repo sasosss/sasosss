@@ -58,7 +58,7 @@
             if (c) { this.app.renderer.centerOn(c.x, c.y); this.app.renderer.selectedCity = c.id; }
             break;
           }
-          case 'timeline-year': this.timelineYear = +id; this.renderPanel(); break;
+          case 'timeline-year': this.timelineYear = +id < 0 ? null : +id; this.renderPanel(); break;
           case 'timeline-filter': this.timelineFilter = id; this.renderPanel(); break;
           case 'new-world': if (confirm('Generare un nuovo mondo? Il mondo attuale verrà sostituito (il salvataggio precedente andrà perso).')) this.app.newWorld(); break;
           case 'save-now': this.app.save(); this.flashSaved(); break;
@@ -116,6 +116,7 @@
     renderPanel() {
       if (!this.world) return;
       const el = $('#panel-content');
+      const keepScroll = el.scrollTop;
       document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.id === this.tab));
       switch (this.tab) {
         case 'world': el.innerHTML = this.viewWorld(); this.drawCharts(); break;
@@ -123,6 +124,7 @@
         case 'timeline': el.innerHTML = this.viewTimeline(); break;
         case 'search': el.innerHTML = this.viewSearch(); break;
       }
+      el.scrollTop = keepScroll;
     }
 
     viewWorld() {
@@ -297,6 +299,7 @@
     renderInspector() {
       const box = $('#inspector');
       if (!this.inspector) { box.classList.remove('open'); return; }
+      const keepScroll = box.classList.contains('open') ? box.scrollTop : 0;
       box.classList.add('open');
       const { type, id } = this.inspector;
       const w = this.world;
@@ -311,6 +314,7 @@
         else if (type === 'army') html = this.viewArmy(w.civs[id]);
       } catch (err) { html = `<div class="dim">Errore: ${U.esc(err.message)}</div>`; }
       box.innerHTML = `<button class="close-btn" data-action="close-inspector">✕</button>` + (html || '<div class="dim">Non trovato.</div>');
+      box.scrollTop = keepScroll;
     }
 
     viewPerson(p) {
@@ -558,7 +562,6 @@
       const p = this.world.people.get(personId);
       if (!p || !p.alive) return;
       this.chat = new PCS.ChatSession(this.world, p);
-      const wasPaused = this.app.speed === 0;
       this.chat._resumeSpeed = this.app.speed;
       this.app.setSpeed(0); // time pauses while you talk
       $('#chat-modal').classList.add('open');
@@ -575,7 +578,7 @@
     closeChat() {
       if (this.chat) {
         this.chat.end();
-        this.app.setSpeed(this.chat._resumeSpeed != null && this.chat._resumeSpeed !== 0 ? this.chat._resumeSpeed : 1);
+        this.app.setSpeed(this.chat._resumeSpeed != null ? this.chat._resumeSpeed : 1);
         this.chat = null;
       }
       $('#chat-modal').classList.remove('open');

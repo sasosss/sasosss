@@ -167,14 +167,18 @@
           this.acc -= 1;
           steps++;
         }
-        if (this.acc > 8) this.acc = 8; // drop backlog beyond budget (speed becomes "best effort")
+        if (this.acc > 80) this.acc = 80; // drop backlog beyond budget (speed becomes "best effort")
         if (steps > 0 && this.world.year % 5 === 0) this.renderer.politicalDirty = true;
       }
       this.renderer.render();
       if ((this._uiT = (this._uiT || 0) + dt) > 0.5) {
         this._uiT = 0;
         this.ui.refresh();
-        if (this.ui.inspector && this.speed > 0) this.ui.renderInspector();
+        // live-refresh the inspector, but not so often that it disturbs reading
+        if ((this._inspT = (this._inspT || 0) + 1) >= 4 && this.ui.inspector && this.speed > 0) {
+          this._inspT = 0;
+          this.ui.renderInspector();
+        }
       }
       requestAnimationFrame((tt) => this.loop(tt));
     }

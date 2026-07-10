@@ -21,6 +21,8 @@
     cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; },
     // Italian year label (negative years = "a.F." avanti Fondazione)
     yearLabel(y) { return y < 0 ? `${-y} a.F.` : `anno ${y}`; },
+    // "nell'anno X" — for use inside sentences
+    inYear(y) { return y < 0 ? `${-y} anni prima della Fondazione` : `nell'anno ${y}`; },
     esc(s) {
       return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
         { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

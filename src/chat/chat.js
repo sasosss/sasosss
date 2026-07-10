@@ -514,7 +514,7 @@
         `Ho ${age} anni! ${s.fearful ? 'La mamma dice di non parlare con gli stranieri...' : 'Quasi grande, no?'}`,
       ]);
       return this.speak([
-        `${age} anni. Nato/a nel ${U.yearLabel(p.birthYear)}, qui${p.travelled ? '... anche se di strada ne ho fatta' : ' e qui probabilmente morirò'}.`.replace('/a', p.sex === 'F' ? 'a' : 'o'),
+        `${age} anni. Nato/a ${U.inYear(p.birthYear)}, qui${p.travelled ? '... anche se di strada ne ho fatta' : ' e qui probabilmente morirò'}.`.replace('/a', p.sex === 'F' ? 'a' : 'o'),
       ]);
     }
 
@@ -533,7 +533,7 @@
         if (p.relTo(parent.id) > 30) out += ` ${rng.pick(['Gli devo tutto.', 'Siamo molto legati.', 'È la mia roccia.'])}`;
         else if (p.relTo(parent.id) < -10) out += ` Non... non parliamo molto, a dire il vero. Vecchie ruggini.`;
       } else {
-        out = `${label}, ${parent.fullName}, è ${sex === 'M' ? 'morto' : 'morta'} ${parent.deathYear ? `nel ${U.yearLabel(parent.deathYear)}` : 'anni fa'}${parent.deathCause === 'guerra' ? ', in guerra' : parent.deathCause === 'peste' || (parent.deathCause || '').includes('febbre') ? `, per ${parent.deathCause}` : parent.deathCause === 'vecchiaia' ? ', di vecchiaia' : parent.deathCause ? ` (${parent.deathCause})` : ''}.`;
+        out = `${label}, ${parent.fullName}, è ${sex === 'M' ? 'morto' : 'morta'} ${parent.deathYear ? `${U.inYear(parent.deathYear)}` : 'anni fa'}${parent.deathCause === 'guerra' ? ', in guerra' : parent.deathCause === 'peste' || (parent.deathCause || '').includes('febbre') ? `, per ${parent.deathCause}` : parent.deathCause === 'vecchiaia' ? ', di vecchiaia' : parent.deathCause ? ` (${parent.deathCause})` : ''}.`;
         if (mem) out += ` ${rng.pick(['Ci penso ancora, sai?', 'Certe ferite non guariscono.', 'Il tempo aiuta, ma non cancella.'])}`;
         if (parent.deathCause === 'guerra') out += ` La guerra... la guerra si è presa più di quanto abbia mai restituito.`;
       }
@@ -546,7 +546,7 @@
       const sp = this.personRef(p.spouseId);
       if (sp && sp.alive) {
         const relv = p.relTo(sp.id);
-        let out = `${p.sex === 'M' ? 'Mia moglie' : 'Mio marito'} si chiama ${sp.fullName}. Ci siamo sposati ${(() => { const m = p.memories.find(m => m.t === 'matrimonio'); return m ? `nel ${U.yearLabel(m.y)}` : 'tanti anni fa'; })()}.`;
+        let out = `${p.sex === 'M' ? 'Mia moglie' : 'Mio marito'} si chiama ${sp.fullName}. Ci siamo sposati ${(() => { const m = p.memories.find(m => m.t === 'matrimonio'); return m ? `${U.inYear(m.y)}` : 'tanti anni fa'; })()}.`;
         if (relv > 40) out += ` ${rng.pick(['È la cosa migliore che mi sia capitata.', 'Dopo tutti questi anni, ancora mi sorprende.', 'Che altro dire? Sono fortunato.'])}`;
         else if (relv < 0) out += ` *abbassa la voce* Le cose... non vanno bene tra noi, se proprio vuoi saperlo. Ma sono affari nostri.`;
         else out += ` Un matrimonio come tanti: giorni buoni e giorni cattivi.`;
@@ -615,7 +615,7 @@
       }
       if (!gps.length) return `I miei nonni? Non li ho mai conosciuti. Erano di un'altra epoca... si dice fossero tra i fondatori di queste terre.`;
       const g = gps[0];
-      let out = `${g.sex === 'F' ? 'Mia nonna' : 'Mio nonno'} ${g.fullName} ${g.alive ? `è ancora tra noi, ${g.age(world.year)} anni e una lingua tagliente` : `è ${g.sex === 'F' ? 'morta' : 'morto'} ${g.deathYear ? `nel ${U.yearLabel(g.deathYear)}` : 'tempo fa'}`}.`;
+      let out = `${g.sex === 'F' ? 'Mia nonna' : 'Mio nonno'} ${g.fullName} ${g.alive ? `è ancora tra noi, ${g.age(world.year)} anni e una lingua tagliente` : `è ${g.sex === 'F' ? 'morta' : 'morto'} ${g.deathYear ? `${U.inYear(g.deathYear)}` : 'tempo fa'}`}.`;
       if (gps.length > 1) out += ` Degli altri ricordo poco: storie davanti al fuoco, mani rugose, canzoni antiche.`;
       return out;
     }
@@ -792,7 +792,7 @@
       if (wars.length) {
         const w = wars[0];
         const foe = world.civs[w.attackerId === civ.id ? w.defenderId : w.attackerId];
-        out = `${this.moodPrefix()}Siamo in guerra, sì: la ${w.name}, contro ${foe ? foe.name : 'un nemico spietato'}. È iniziata nel ${U.yearLabel(w.startYear)} per ${w.cause}. `;
+        out = `${this.moodPrefix()}Siamo in guerra, sì: la ${w.name}, contro ${foe ? foe.name : 'un nemico spietato'}. È iniziata ${U.inYear(w.startYear)} per ${w.cause}. `;
         out += p.traits.courage > 0.6
           ? rng.pick(['E vinceremo, dovessi impugnare la lancia io stesso.', 'Il nemico imparerà a temerci.'])
           : rng.pick(['Ho paura, te lo confesso. Ogni settimana arrivano nomi di caduti.', 'Prego solo che finisca presto. La guerra non risparmia nessuno.']);
@@ -862,7 +862,7 @@
         : `Io non sono ${p.sex === 'F' ? 'una studiosa' : 'uno studioso'}, ma certe cose le ricorda chiunque. `;
       for (const e of picks) {
         const seen = e.y >= p.birthYear && e.y <= world.year;
-        out += `${seen && age - (world.year - e.y) > 8 ? `Nel ${U.yearLabel(e.y)} — me lo ricordo bene — ` : `Si racconta che nel ${U.yearLabel(e.y)} `}${e.text} `;
+        out += `${seen && age - (world.year - e.y) > 8 ? `${U.cap(U.inYear(e.y))} — me lo ricordo bene — ` : `Si racconta che ${U.inYear(e.y)} `}${e.text} `;
       }
       if (know < 0.35 && rng.chance(0.4)) out += `Ma prendi le mie parole con cautela: le storie cambiano a ogni bocca che le racconta.`;
       this.remember('abbiamo parlato di storia');
@@ -1126,7 +1126,7 @@
       const mem = p.memories.find(m => m.subj && m.subj.includes(o.id));
       let out = '';
       if (!o.alive) {
-        out = `${o.fullName}? ${o.deathYear ? `È ${o.sex === 'F' ? 'morta' : 'morto'} nel ${U.yearLabel(o.deathYear)}${o.deathCause ? ` (${o.deathCause})` : ''}.` : 'Non è più tra noi.'} `;
+        out = `${o.fullName}? ${o.deathYear ? `È ${o.sex === 'F' ? 'morta' : 'morto'} ${U.inYear(o.deathYear)}${o.deathCause ? ` (${o.deathCause})` : ''}.` : 'Non è più tra noi.'} `;
         if (mem) out += mem.text + '.';
         else if (relv > 30) out += `${rng.pick(['Che la terra gli sia lieve: era una brava persona.', 'Mi manca, se devo dirla tutta.'])}`;
         else if (relv < -20) out += `Non dirò male dei morti. Ma nemmeno bene.`;

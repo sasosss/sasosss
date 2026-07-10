@@ -1,26 +1,15 @@
 {
-  "name": "workspace",
+  "name": "persistent-civilization-simulator",
   "version": "1.0.0",
-  "description": "Una simulazione emergente di un mondo vivente, interamente in un singolo file HTML (nessun server, nessuna dipendenza). Il giocatore è un osservatore — un \"Viandante Eterno\" — in un mondo che nasce, evolve e continua a vivere anche quando la pagina è chiusa.",
-  "main": "build.js",
-  "directories": {
-    "test": "test"
-  },
+  "description": "Simulazione emergente di un mondo vivente in un singolo file HTML: civiltà, individui unici con memoria, guerre, religioni, economia e conversazioni con gli NPC.",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.js",
+    "test": "node test/sim.test.js",
+    "test:browser": "node test/browser.test.js",
+    "test:longrun": "node test/longrun.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sasosss/sasosss.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sasosss/sasosss/issues"
-  },
-  "homepage": "https://github.com/sasosss/sasosss#readme",
-  "dependencies": {
+  "devDependencies": {
     "puppeteer-core": "^25.3.0"
   }
 }
